@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shemelis</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0c1e3e 0%, #1a3658 100%);
+      min-height: 100vh;
+      color: #f0f0f0;
+    }
+    
+    .top {
+      text-align: center;
+      padding: 2rem;
+      background: rgba(13, 28, 53, 0.9);
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      border-bottom: 2px solid #4d7ebd;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .top::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #4d7ebd, #7eb3e6, #4d7ebd);
+    }
+    
+    .logo {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 1rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4d7ebd, #7eb3e6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: white;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      color: #7eb3e6;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      background: linear-gradient(90deg, #7eb3e6, #a8d0ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .subtitle {
+      font-size: 1.1rem;
+      color: #a8d0ff;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    
+    .left, .right {
+      background: rgba(13, 28, 53, 0.7);
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(77, 126, 189, 0.3);
+      backdrop-filter: blur(10px);
+    }
+    
+    .uploader {
+      border: 3px dashed #4d7ebd;
+      border-radius: 10px;
+      padding: 3rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 1.5rem;
+      background: rgba(13, 28, 53, 0.5);
+    }
+    
+    .uploader:hover {
+      background: rgba(26, 54, 88, 0.7);
+      border-color: #7eb3e6;
+      transform: translateY(-2px);
+    }
+    
+    .uploader input {
+      display: none;
+    }
+    
+    .uploader p {
+      color: #a8d0ff;
+      font-size: 1.1rem;
+    }
+    
+    .preview {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .preview img {
+      max-width: 100%;
+      max-height: 300px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      display: none;
+      border: 2px solid #4d7ebd;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex: 1;
+      min-width: 150px;
+      font-weight: 600;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn:not(.ghost) {
+      background: linear-gradient(135deg, #4d7ebd, #7eb3e6);
+      color: white;
+    }
+    
+    .btn:not(.ghost):hover {
+      background: linear-gradient(135deg, #7eb3e6, #a8d0ff);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .btn.ghost {
+      background: transparent;
+      border: 2px solid #4d7ebd;
+      color: #a8d0ff;
+    }
+    
+    .btn.ghost:hover {
+      border-color: #7eb3e6;
+      color: #ffffff;
+      background: rgba(77, 126, 189, 0.2);
+    }
+    
+    .btn:disabled {
+      background: #3a506b;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .right h2 {
+      color: #7eb3e6;
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+      text-align: center;
+      border-bottom: 2px solid rgba(77, 126, 189, 0.3);
+      padding-bottom: 0.5rem;
+    }
+    
+    #results {
+      min-height: 200px;
+      padding: 1.5rem;
+      background: rgba(13, 28, 53, 0.5);
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(77, 126, 189, 0.2);
+    }
+    
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid rgba(77, 126, 189, 0.2);
+      transition: all 0.3s ease;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+    
+    .result-item:hover {
+      background: rgba(26, 54, 88, 0.5);
+    }
+    
+    .result-item:last-child {
+      border-bottom: none;
+    }
+    
+    .item-name {
+      font-weight: bold;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .confidence {
+      color: #4CAF50;
+      font-weight: bold;
+      background: rgba(76, 175, 80, 0.1);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    
+    .top-result {
+      background: rgba(26, 54, 88, 0.7);
+      border-left: 4px solid #4CAF50;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .notes {
+      background: rgba(255, 193, 7, 0.1);
+      border: 1px solid rgba(255, 193, 7, 0.3);
+      border-radius: 8px;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #FFC107;
+    }
+    
+    .foot {
+      text-align: center;
+      padding: 2rem;
+      margin-top: 3rem;
+      color: #a8d0ff;
+      border-top: 1px solid rgba(77, 126, 189, 0.3);
+    }
+    
+    .dota-icon {
+      font-size: 1.5rem;
+    }
+    
+    .top-result-box {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, rgba(26, 54, 88, 0.8), rgba(13, 28, 53, 0.8));
+      border-radius: 10px;
+      border: 1px solid rgba(77, 126, 189, 0.3);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .top-result-icon {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .top-result-name {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #7eb3e6;
+      margin-bottom: 0.5rem;
+    }
+    
+    .top-result-confidence {
+      color: #4CAF50;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    
+    @media (max-width: 768px) {
+      .content {
+        grid-template-columns: 1fr;
+        padding: 0 1rem;
+      }
+      
+      .controls {
+        flex-direction: column;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="logo">⚔️</div>
+    <h1>Shemelis</h1></p>
+  </header>
+
+  <main class="content">
+    <section class="left">
+      <div class="uploader" id="dropzone">
+        <input type="file" id="imageUpload" accept="image/*">
+        <p>📁 Перетащите изображение сюда или кликните для выбора</p>
+      </div>
+      <div class="preview">
+        <img id="previewImg" alt="Предпросмотр изображения" />
+      </div>
+      <div class="controls">
+        <button id="predictBtn" class="btn" disabled>🔍 Определить предмет</button>
+        <button id="reloadBtn" class="btn ghost">🔄 Перезагрузить модель</button>
+      </div>
+    </section>
+
+    <section class="right">
+      <h2>Результат распознавания</h2>
+      <div id="results">Модель загружается...</div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>Shemelis</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js"></script>
+  <script>
+    let model;
+    let isModelLoaded = false;
+
+    // Иконки для предметов Dota 2
+    const itemIcons = {
+      'Шемелис': '⚔️',
+      'Рапира': '🗡️', 
+      'муншард': '🛡️',
+      'дейделас': '🏹'
+    };
+
+    // Загрузка модели
+    async function loadModel() {
+      try {
+        const statusDiv = document.getElementById('results');
+        statusDiv.innerHTML = '<div style="text-align:center;padding:2rem;">🔄 Загружаем модель Dota 2 предметов...</div>';
+        
+        model = await tf.loadLayersModel('model.json');
+        isModelLoaded = true;
+        
+        statusDiv.innerHTML = '<div style="text-align:center;padding:2rem;color:#4CAF50">✅ Модель загружена! Загрузите изображение предмета из Dota 2.</div>';
+        document.getElementById('predictBtn').disabled = false;
+        
+        console.log('Модель успешно загружена');
+      } catch (error) {
+        console.error('Ошибка загрузки модели:', error);
+        document.getElementById('results').innerHTML = 
+          '<div style="text-align:center;padding:2rem;color:#f44336">❌ Ошибка загрузки модели. Проверьте наличие model.json и weights.bin</div>';
+      }
+    }
+
+    // Обработка загрузки файла
+    document.getElementById('imageUpload').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.getElementById('previewImg');
+          img.src = e.target.result;
+          img.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Drag and drop
+    const dropzone = document.getElementById('dropzone');
+    dropzone.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      this.style.background = 'rgba(26, 54, 88, 0.9)';
+      this.style.borderColor = '#7eb3e6';
+    });
+
+    dropzone.addEventListener('dragleave', function(e) {
+      e.preventDefault();
+      this.style.background = 'rgba(13, 28, 53, 0.5)';
+      this.style.borderColor = '#4d7ebd';
+    });
+
+    dropzone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      this.style.background = 'rgba(13, 28, 53, 0.5)';
+      this.style.borderColor = '#4d7ebd';
+      
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        document.getElementById('imageUpload').files = e.dataTransfer.files;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.getElementById('previewImg');
+          img.src = e.target.result;
+          img.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Клик по области загрузки
+    dropzone.addEventListener('click', function() {
+      document.getElementById('imageUpload').click();
+    });
+
+    // Предсказание
+    document.getElementById('predictBtn').addEventListener('click', async function() {
+      if (!isModelLoaded) {
+        alert('Модель еще не загружена!');
+        return;
+      }
+
+      const img = document.getElementById('previewImg');
+      if (!img.src || img.src === window.location.href) {
+        alert('Пожалуйста, сначала загрузите изображение!');
+        return;
+      }
+
+      try {
+        this.disabled = true;
+        this.textContent = '🔍 Анализируем...';
+
+        const predictions = await predictImage(img);
+        displayResults(predictions);
+        
+        this.disabled = false;
+        this.textContent = '🔍 Определить предмет';
+      } catch (error) {
+        console.error('Ошибка предсказания:', error);
+        alert('Ошибка при анализе изображения');
+        this.disabled = false;
+        this.textContent = '🔍 Определить предмет';
+      }
+    });
+
+    // Перезагрузка модели
+    document.getElementById('reloadBtn').addEventListener('click', function() {
+      loadModel();
+    });
+
+    // Функция предсказания
+    async function predictImage(imgElement) {
+      // Создаем тензор из изображения
+      const tensor = tf.browser.fromPixels(imgElement)
+        .resizeNearestNeighbor([224, 224]) // Размер как в модели
+        .toFloat()
+        .div(255.0)
+        .expandDims();
+      
+      // Предсказание
+      const prediction = model.predict(tensor);
+      const probabilities = await prediction.data();
+      
+      // Очистка памяти
+      tensor.dispose();
+      prediction.dispose();
+      
+      // Сопоставляем вероятности с классами
+      const results = [
+        { className: 'Шемелис', probability: probabilities[0] },
+        { className: 'Рапира', probability: probabilities[1] },
+        { className: 'муншард', probability: probabilities[2] },
+        { className: 'дейделас', probability: probabilities[3] }
+      ];
+      
+      // Сортируем по убыванию вероятности
+      return results.sort((a, b) => b.probability - a.probability);
+    }
+
+    // Отображение результатов
+    function displayResults(predictions) {
+      const resultsDiv = document.getElementById('results');
+      let html = '';
+      
+      // Определяем самый вероятный предмет
+      const topItem = predictions[0];
+      const topPercent = (topItem.probability * 100).toFixed(1);
+      const topIcon = itemIcons[topItem.className];
+      
+      html = `
+        <div class="top-result-box">
+          <div class="top-result-icon">${topIcon}</div>
+          <div class="top-result-name">${topItem.className}</div>
+          <div class="top-result-confidence">Уверенность: ${topPercent}%</div>
+        </div>
+      `;
+      
+      // Добавляем все результаты
+      predictions.forEach((pred, index) => {
+        const percent = (pred.probability * 100).toFixed(1);
+        const icon = itemIcons[pred.className] || '⚔️';
+        const isTop = index === 0;
+        
+        html += `
+          <div class="result-item ${isTop ? 'top-result' : ''}">
+            <span class="item-name">${icon} ${pred.className}</span>
+            <span class="confidence">${percent}%</span>
+          </div>
+        `;
+      });
+      
+      resultsDiv.innerHTML = html;
+    }
+
+    // Загружаем модель при старте
+    loadModel();
+  </script>
+</body>
+</html>
